@@ -7,21 +7,24 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import net.kosev.mvidemo.databinding.FragmentCalculatorBinding
 
 class CalculatorFragment : Fragment() {
+
+    private lateinit var binding: FragmentCalculatorBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_calculator, container, false)
+    ): View {
+        binding = FragmentCalculatorBinding.inflate(inflater, container, false)
 
-        view.findViewById<Button>(R.id.button).setOnClickListener {
+        binding.settingButton.setOnClickListener {
             findNavController().navigate(R.id.action_calculatorFragment_to_settingsFragment)
         }
 
-        return view
+        return binding.root
     }
 
 }
