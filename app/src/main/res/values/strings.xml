@@ -2,6 +2,7 @@
     <string name="app_name">Mvi Demo</string>
     <string name="settings">Settings</string>
     <string name="buy">Buy Bitcoin</string>
-    <string name="sell_euro">Sell Euro</string>
-    <string name="result_default">BTC 0.00000000</string>
+    <string name="spend_euro">Spend Euro</string>
+    <string name="result_default">0.00000000</string>
+    <string name="receive_bitcoin">Receive Bitcoin</string>
 </resources>
