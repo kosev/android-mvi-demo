@@ -1,4 +1,4 @@
-package net.kosev.mvidemo
+package net.kosev.mvidemo.repository
 
 import kotlinx.coroutines.delay
 import java.math.BigDecimal
@@ -6,9 +6,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RateRepository @Inject constructor() {
+class PriceRepository @Inject constructor() {
 
-    suspend fun getCryptoRate(): BigDecimal {
+    suspend fun getCryptoPrice(): BigDecimal {
         delay(500)
         return HARDCODED_BITCOIN_PRICE
     }

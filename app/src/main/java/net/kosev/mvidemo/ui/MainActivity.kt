@@ -1,8 +1,9 @@
-package net.kosev.mvidemo
+package net.kosev.mvidemo.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import dagger.hilt.android.AndroidEntryPoint
+import net.kosev.mvidemo.R
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

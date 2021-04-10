@@ -1,4 +1,4 @@
-package net.kosev.mvidemo
+package net.kosev.mvidemo.ui.trade
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,20 +9,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import net.kosev.mvidemo.databinding.FragmentCalculatorBinding
+import net.kosev.mvidemo.*
+import net.kosev.mvidemo.databinding.FragmentTradeBinding
 
 @AndroidEntryPoint
-class CalculatorFragment : Fragment() {
+class TradeFragment : Fragment() {
 
-    private val viewModel: CalculatorViewModel by viewModels()
-    private lateinit var binding: FragmentCalculatorBinding
+    private val viewModel: TradeViewModel by viewModels()
+    private lateinit var binding: FragmentTradeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentCalculatorBinding.inflate(inflater, container, false)
+        binding = FragmentTradeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -30,10 +31,10 @@ class CalculatorFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.settingButton.setOnClickListener {
-            viewModel.onEvent(CalculatorEvent.SettingsClick)
+            viewModel.onEvent(TradeEvent.SettingsClick)
         }
         binding.amountField.editText?.addTextChangedListener { text ->
-            viewModel.onEvent(CalculatorEvent.AmountChange(text.toString()))
+            viewModel.onEvent(TradeEvent.AmountChange(text.toString()))
         }
 
         viewModel.state.observe(viewLifecycleOwner) { updateUi(it) }
@@ -42,14 +43,14 @@ class CalculatorFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.onEvent(CalculatorEvent.ScreenLoad)
+        viewModel.onEvent(TradeEvent.ScreenLoad)
     }
 
-    private fun updateUi(state: CalculatorState) =
+    private fun updateUi(state: TradeState) =
         when (state) {
-            CalculatorState.Error -> showErrorState()
-            CalculatorState.Loading -> showLoadingState()
-            is CalculatorState.Success -> showSuccessState(state)
+            TradeState.Error -> showErrorState()
+            TradeState.Loading -> showLoadingState()
+            is TradeState.Success -> showSuccessState(state)
         }
 
     private fun showLoadingState() {
@@ -57,7 +58,7 @@ class CalculatorFragment : Fragment() {
         binding.loading.visibility = View.VISIBLE
     }
 
-    private fun showSuccessState(state: CalculatorState.Success) {
+    private fun showSuccessState(state: TradeState.Success) {
         binding.content.visibility = View.VISIBLE
         binding.loading.visibility = View.GONE
         binding.state = state
@@ -67,9 +68,9 @@ class CalculatorFragment : Fragment() {
         TODO("Not yet implemented")
     }
 
-    private fun applyEffect(effect: CalculatorEffect) =
+    private fun applyEffect(effect: TradeEffect) =
         when (effect) {
-            CalculatorEffect.NavigateToSettings -> navigateToSettings()
+            TradeEffect.NavigateToSettings -> navigateToSettings()
         }
 
     private fun navigateToSettings(): Unit =

@@ -1,4 +1,4 @@
-package net.kosev.mvidemo
+package net.kosev.mvidemo.repository
 
 import kotlinx.coroutines.delay
 import java.math.BigDecimal

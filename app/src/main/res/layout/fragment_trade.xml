@@ -7,7 +7,7 @@
 
         <variable
             name="state"
-            type="net.kosev.mvidemo.CalculatorState.Success" />
+            type="net.kosev.mvidemo.ui.trade.TradeState.Success" />
 
     </data>
 

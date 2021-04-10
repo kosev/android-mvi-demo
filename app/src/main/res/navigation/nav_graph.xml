@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/calculatorFragment"
-        android:name="net.kosev.mvidemo.CalculatorFragment"
+        android:name="net.kosev.mvidemo.ui.trade.TradeFragment"
         android:label="CalculatorFragment" >
         <action
             android:id="@+id/action_calculatorFragment_to_settingsFragment"
@@ -13,7 +13,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="net.kosev.mvidemo.SettingsFragment"
+        android:name="net.kosev.mvidemo.ui.settings.SettingsFragment"
         android:label="SettingsFragment" />
 
 </navigation>
