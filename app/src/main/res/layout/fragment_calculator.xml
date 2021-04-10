@@ -3,6 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <import type="net.kosev.mvidemo.CalculatorEvent" />
+
+        <variable
+            name="viewModel"
+            type="net.kosev.mvidemo.CalculatorViewModel" />
+
+        <variable
+            name="state"
+            type="net.kosev.mvidemo.CalculatorState" />
+
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -11,10 +25,10 @@
             android:id="@+id/setting_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/settings"
+            android:onClick="@{() -> viewModel.onEvent(CalculatorEvent.SettingsClick.INSTANCE)}"
             android:tint="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:maxLines="1"
+            android:text="@{state.cryptoBalance}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:maxLines="1"
+            android:text="@{state.fiatBalance}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
