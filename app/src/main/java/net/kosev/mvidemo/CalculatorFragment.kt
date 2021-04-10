@@ -27,7 +27,9 @@ class CalculatorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.viewModel = viewModel
+
         viewModel.state.observe(viewLifecycleOwner) { updateUi(it) }
         viewModel.effect.observe(viewLifecycleOwner, EventObserver { applyEffect(it) })
     }
