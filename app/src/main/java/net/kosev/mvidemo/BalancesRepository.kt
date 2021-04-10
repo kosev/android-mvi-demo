@@ -9,7 +9,7 @@ import javax.inject.Singleton
 class BalancesRepository @Inject constructor() {
 
     suspend fun getBalances(): Balances {
-        delay(3000)
+        delay(2000)
         return Balances(BigDecimal("1.23450000"), BigDecimal("36456.00"))
     }
 

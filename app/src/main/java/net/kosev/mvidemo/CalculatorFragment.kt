@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -28,7 +29,12 @@ class CalculatorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewModel = viewModel
+        binding.settingButton.setOnClickListener {
+            viewModel.onEvent(CalculatorEvent.SettingsClick)
+        }
+        binding.amountField.editText?.addTextChangedListener { text ->
+            viewModel.onEvent(CalculatorEvent.AmountChange(text.toString()))
+        }
 
         viewModel.state.observe(viewLifecycleOwner) { updateUi(it) }
         viewModel.effect.observe(viewLifecycleOwner, EventObserver { applyEffect(it) })

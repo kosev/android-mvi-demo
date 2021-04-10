@@ -5,12 +5,6 @@
 
     <data>
 
-        <import type="net.kosev.mvidemo.CalculatorEvent" />
-
-        <variable
-            name="viewModel"
-            type="net.kosev.mvidemo.CalculatorViewModel" />
-
         <variable
             name="state"
             type="net.kosev.mvidemo.CalculatorState.Success" />
@@ -29,7 +23,6 @@
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/settings"
-            android:onClick="@{() -> viewModel.onEvent(CalculatorEvent.SettingsClick.INSTANCE)}"
             android:tint="@color/black"
             app:srcCompat="@drawable/ic_settings_24dp" />
 
@@ -89,7 +82,8 @@
                 android:id="@+id/rate_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawablePadding="8dp"
+                android:drawablePadding="4dp"
+                android:text="@{state.rate}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:drawableStartCompat="@drawable/ic_conversion_24dp"
                 app:drawableTint="@color/black"
@@ -115,7 +109,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
-                    android:text="@string/result_default" />
+                    android:text="@{state.result}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
