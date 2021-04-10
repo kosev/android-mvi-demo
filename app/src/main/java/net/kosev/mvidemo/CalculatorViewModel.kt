@@ -3,11 +3,17 @@ package net.kosev.mvidemo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class CalculatorViewModel @Inject constructor() : ViewModel() {
+class CalculatorViewModel @Inject constructor(
+    private val balancesRepository: BalancesRepository
+) : ViewModel() {
 
     private val _state = MutableLiveData<CalculatorState>()
     val state: LiveData<CalculatorState> = _state
@@ -17,16 +23,30 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
 
     fun onEvent(event: CalculatorEvent): Unit =
         when (event) {
-            CalculatorEvent.ScreenLoad -> _state.value = CalculatorState("BTC 0.14000000", "EUR 48550.00")
+            CalculatorEvent.ScreenLoad -> handleScreenLoad()
             CalculatorEvent.BuyBitcoinClick -> TODO()
             CalculatorEvent.SettingsClick -> _effect.value = Event(CalculatorEffect.NavigateToSettings)
         }
+
+    private fun handleScreenLoad() {
+        _state.value = CalculatorState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            val balances = balancesRepository.getBalances()
+            withContext(Dispatchers.Main) {
+                _state.value = CalculatorState.Success("111", "222")
+            }
+        }
+    }
 }
 
-data class CalculatorState(
-    val cryptoBalance: String,
-    val fiatBalance: String
-)
+sealed class CalculatorState {
+    object Loading : CalculatorState()
+    object Error : CalculatorState()
+    data class Success(
+        val cryptoBalance: String,
+        val fiatBalance: String
+    ) : CalculatorState()
+}
 
 sealed class CalculatorEvent {
     object ScreenLoad : CalculatorEvent()

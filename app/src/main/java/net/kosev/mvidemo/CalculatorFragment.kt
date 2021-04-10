@@ -39,8 +39,26 @@ class CalculatorFragment : Fragment() {
         viewModel.onEvent(CalculatorEvent.ScreenLoad)
     }
 
-    private fun updateUi(state: CalculatorState) {
+    private fun updateUi(state: CalculatorState) =
+        when (state) {
+            CalculatorState.Error -> showErrorState()
+            CalculatorState.Loading -> showLoadingState()
+            is CalculatorState.Success -> showSuccessState(state)
+        }
+
+    private fun showLoadingState() {
+        binding.content.visibility = View.GONE
+        binding.loading.visibility = View.VISIBLE
+    }
+
+    private fun showSuccessState(state: CalculatorState.Success) {
+        binding.content.visibility = View.VISIBLE
+        binding.loading.visibility = View.GONE
         binding.state = state
+    }
+
+    private fun showErrorState() {
+        TODO("Not yet implemented")
     }
 
     private fun applyEffect(effect: CalculatorEffect) =
