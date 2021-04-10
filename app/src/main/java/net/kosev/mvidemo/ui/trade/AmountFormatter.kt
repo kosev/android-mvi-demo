@@ -27,7 +27,7 @@ class AmountFormatter @Inject constructor() {
         "EUR ${formatFiat(amount)}"
 
     fun formatExchangeRate(cryptoPrice: BigDecimal): String =
-        "1 BTC = ${formatFiat(cryptoPrice)}"
+        "BTC 1 = ${formatFiatWithSymbol(cryptoPrice)}"
 
     companion object {
         private const val CRYPTO_FRACTION_DIGITS = 8
