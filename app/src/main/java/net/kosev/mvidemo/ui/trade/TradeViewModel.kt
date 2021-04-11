@@ -30,7 +30,7 @@ class TradeViewModel @Inject constructor(
         when (event) {
             TradeEvent.ScreenLoad -> handleScreenLoad()
             TradeEvent.BuyCryptoClick -> TODO()
-            TradeEvent.SettingsClick -> _effect.value = Event(TradeEffect.NavigateToSettings)
+            TradeEvent.SettingsClick -> handleSettingsClick()
             is TradeEvent.AmountChange -> handleAmountChange(event.value)
         }
 
@@ -44,25 +44,33 @@ class TradeViewModel @Inject constructor(
 
                 val cryptoPrice = priceRepository.getCryptoPrice()
                 val rate = amountFormatter.formatExchangeRate(cryptoPrice)
-                val defaultResult = amountFormatter.formatCrypto(BigDecimal.ZERO)
 
-                _state.value = TradeState.Success(cryptoBalance, fiatBalance, cryptoPrice, rate, defaultResult)
+                _state.value = TradeState.Success(cryptoBalance, fiatBalance, cryptoPrice, rate, defaultResult())
             } catch (e: Exception) {
                 _state.value = TradeState.Error
             }
         }
     }
 
+    private fun handleSettingsClick() {
+        _effect.value = Event(TradeEffect.NavigateToSettings)
+    }
+
     private fun handleAmountChange(value: String) {
         (state.value as? TradeState.Success)?.let {
             try {
-                val result = BigDecimal(value).divide(it.cryptoPrice, 8, RoundingMode.HALF_UP)
+                val result = calculateNewResult(value, it)
                 _state.value = it.copy(result = amountFormatter.formatCrypto(result))
             } catch (e: NumberFormatException) {
-                _state.value = it.copy(result = amountFormatter.formatCrypto(BigDecimal.ZERO))
+                _state.value = it.copy(result = defaultResult())
             }
         }
     }
+
+    private fun calculateNewResult(value: String, it: TradeState.Success): BigDecimal =
+        BigDecimal(value).divide(it.cryptoPrice, 8, RoundingMode.HALF_UP)
+
+    private fun defaultResult(): String = amountFormatter.formatCrypto(BigDecimal.ZERO)
 
 }
 

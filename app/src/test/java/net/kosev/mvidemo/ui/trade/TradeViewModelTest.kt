@@ -47,8 +47,10 @@ class TradeViewModelTest {
     @Test
     fun `onEvent with SettingsClick should emit navigate to setting effect`() {
         tested.onEvent(TradeEvent.SettingsClick)
-        val effect = tested.effect.getOrAwaitValue()
-        assertEquals(TradeEffect.NavigateToSettings, effect.getContentIfNotHandled())
+        assertEquals(
+            TradeEffect.NavigateToSettings,
+            tested.effect.getOrAwaitValue().getContentIfNotHandled()
+        )
     }
 
     @Test
