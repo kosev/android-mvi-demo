@@ -5,12 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import net.kosev.mvidemo.ui.Event
 import net.kosev.mvidemo.repository.BalancesRepository
 import net.kosev.mvidemo.repository.PriceRepository
+import net.kosev.mvidemo.ui.Event
 import java.math.BigDecimal
 import java.math.RoundingMode
 import javax.inject.Inject
@@ -31,7 +29,7 @@ class TradeViewModel @Inject constructor(
     fun onEvent(event: TradeEvent): Unit =
         when (event) {
             TradeEvent.ScreenLoad -> handleScreenLoad()
-            TradeEvent.BuyBitcoinClick -> TODO()
+            TradeEvent.BuyCryptoClick -> TODO()
             TradeEvent.SettingsClick -> _effect.value = Event(TradeEffect.NavigateToSettings)
             is TradeEvent.AmountChange -> handleAmountChange(event.value)
         }
@@ -39,21 +37,18 @@ class TradeViewModel @Inject constructor(
     private fun handleScreenLoad() {
         _state.value = TradeState.Loading
         viewModelScope.launch {
-            val balances = balancesRepository.getBalances()
-            val cryptoBalance = amountFormatter.formatCryptoWithSymbol(balances.cryptoBalance)
-            val fiatBalance = amountFormatter.formatFiatWithSymbol(balances.fiatBalance)
+            try {
+                val balances = balancesRepository.getBalances()
+                val cryptoBalance = amountFormatter.formatCryptoWithSymbol(balances.cryptoBalance)
+                val fiatBalance = amountFormatter.formatFiatWithSymbol(balances.fiatBalance)
 
-            val cryptoPrice = priceRepository.getCryptoPrice()
-            val rate = amountFormatter.formatExchangeRate(cryptoPrice)
+                val cryptoPrice = priceRepository.getCryptoPrice()
+                val rate = amountFormatter.formatExchangeRate(cryptoPrice)
+                val defaultResult = amountFormatter.formatCrypto(BigDecimal.ZERO)
 
-            withContext(Dispatchers.Main) {
-                _state.value = TradeState.Success(
-                    cryptoBalance,
-                    fiatBalance,
-                    cryptoPrice,
-                    rate,
-                    amountFormatter.formatCrypto(BigDecimal.ZERO)
-                )
+                _state.value = TradeState.Success(cryptoBalance, fiatBalance, cryptoPrice, rate, defaultResult)
+            } catch (e: Exception) {
+                _state.value = TradeState.Error
             }
         }
     }
@@ -86,7 +81,7 @@ sealed class TradeState {
 sealed class TradeEvent {
     object ScreenLoad : TradeEvent()
     object SettingsClick : TradeEvent()
-    object BuyBitcoinClick : TradeEvent()
+    object BuyCryptoClick : TradeEvent()
     data class AmountChange(val value: String) : TradeEvent()
 }
 
