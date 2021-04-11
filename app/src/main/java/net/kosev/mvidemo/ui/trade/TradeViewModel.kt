@@ -38,7 +38,7 @@ class TradeViewModel @Inject constructor(
 
     private fun handleScreenLoad() {
         _state.value = TradeState.Loading
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val balances = balancesRepository.getBalances()
             val cryptoBalance = amountFormatter.formatCryptoWithSymbol(balances.cryptoBalance)
             val fiatBalance = amountFormatter.formatFiatWithSymbol(balances.fiatBalance)

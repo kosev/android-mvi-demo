@@ -1,16 +1,22 @@
 package net.kosev.mvidemo.repository
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PriceRepository @Inject constructor() {
+class PriceRepository(private val defaultDispatcher: CoroutineDispatcher) {
 
-    suspend fun getCryptoPrice(): BigDecimal {
+    @Inject
+    constructor() : this(Dispatchers.IO)
+
+    suspend fun getCryptoPrice(): BigDecimal = withContext(defaultDispatcher) {
         delay(500)
-        return HARDCODED_BITCOIN_PRICE
+        HARDCODED_BITCOIN_PRICE
     }
 
     companion object {
