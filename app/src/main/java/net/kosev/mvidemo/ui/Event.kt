@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.kosev.mvidemo
+package net.kosev.mvidemo.ui
 
 import androidx.lifecycle.Observer
 

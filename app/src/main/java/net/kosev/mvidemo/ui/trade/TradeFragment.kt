@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import net.kosev.mvidemo.*
 import net.kosev.mvidemo.databinding.FragmentTradeBinding
+import net.kosev.mvidemo.ui.EventObserver
 
 @AndroidEntryPoint
 class TradeFragment : Fragment() {

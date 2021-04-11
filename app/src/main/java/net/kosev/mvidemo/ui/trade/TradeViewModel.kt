@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.kosev.mvidemo.Event
+import net.kosev.mvidemo.ui.Event
 import net.kosev.mvidemo.repository.BalancesRepository
 import net.kosev.mvidemo.repository.PriceRepository
 import java.math.BigDecimal
