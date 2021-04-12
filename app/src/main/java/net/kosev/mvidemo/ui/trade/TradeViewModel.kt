@@ -1,6 +1,5 @@
 package net.kosev.mvidemo.ui.trade
 
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -37,9 +36,10 @@ class TradeViewModel @Inject constructor(
         }
 
     private fun handleScreenLoad() {
-        _state.value = TradeState.Loading
         viewModelScope.launch {
             try {
+                _state.value = TradeState.Loading
+
                 val balances = balancesRepository.getBalances()
                 val cryptoBalance = amountFormatter.formatCryptoWithSymbol(balances.cryptoBalance)
                 val fiatBalance = amountFormatter.formatFiatWithSymbol(balances.fiatBalance)
@@ -71,7 +71,7 @@ class TradeViewModel @Inject constructor(
                     onEvent(TradeEvent.ScreenLoad)
                 }
             } catch (e: Exception) {
-                Log.d("BLA", "error $e")
+                _effect.value = Event(TradeEffect.ShowBuyError)
             }
         }
     }
@@ -100,9 +100,11 @@ class TradeViewModel @Inject constructor(
     private fun calculateNewResult(amount: BigDecimal, cryptoPrice: BigDecimal): BigDecimal =
         amount.divide(cryptoPrice, 8, RoundingMode.HALF_UP)
 
-    private fun defaultResult(): String = amountFormatter.formatCrypto(BigDecimal.ZERO)
+    private fun defaultResult(): String =
+        amountFormatter.formatCrypto(BigDecimal.ZERO)
 
-    private fun successOrNull(): TradeState.Success? = (state.value as? TradeState.Success)
+    private fun successOrNull(): TradeState.Success? =
+        (state.value as? TradeState.Success)
 
     @VisibleForTesting
     fun setStateForTesting(state: TradeState) {
@@ -134,4 +136,5 @@ sealed class TradeEvent {
 
 sealed class TradeEffect {
     object NavigateToSettings : TradeEffect()
+    object ShowBuyError : TradeEffect()
 }

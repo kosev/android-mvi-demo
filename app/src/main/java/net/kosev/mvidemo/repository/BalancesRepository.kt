@@ -20,7 +20,7 @@ class BalancesRepository(private val defaultDispatcher: CoroutineDispatcher) {
 
     suspend fun getBalances(): Balances =
         withContext(defaultDispatcher) {
-            delay(2000)
+            delay(1500)
             Balances(currentCryptoBalance, currentFiatBalance)
         }
 

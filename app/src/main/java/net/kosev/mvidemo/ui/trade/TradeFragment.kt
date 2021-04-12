@@ -1,9 +1,12 @@
 package net.kosev.mvidemo.ui.trade
 
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -38,6 +41,7 @@ class TradeFragment : Fragment() {
             viewModel.onEvent(TradeEvent.AmountChange(text.toString()))
         }
         binding.buyButton.setOnClickListener {
+            hideKeyboard()
             viewModel.onEvent(TradeEvent.BuyCryptoClick)
         }
 
@@ -75,9 +79,27 @@ class TradeFragment : Fragment() {
     private fun applyEffect(effect: TradeEffect) =
         when (effect) {
             TradeEffect.NavigateToSettings -> navigateToSettings()
+            TradeEffect.ShowBuyError -> showBuyErrorDialog()
         }
 
     private fun navigateToSettings(): Unit =
         findNavController().navigate(R.id.action_calculatorFragment_to_settingsFragment)
+
+    private fun showBuyErrorDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.error_title)
+            .setMessage(R.string.error_message)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                viewModel.onEvent(TradeEvent.ScreenLoad)
+            }
+            .show()
+    }
+
+    private fun hideKeyboard() {
+        requireActivity().currentFocus?.let { view ->
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
 
 }

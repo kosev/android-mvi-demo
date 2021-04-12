@@ -4,4 +4,6 @@
     <string name="buy">Buy Bitcoin</string>
     <string name="spend_euro">Spend Euro</string>
     <string name="receive_bitcoin">Receive Bitcoin</string>
+    <string name="error_title">Error</string>
+    <string name="error_message">Cannot buy crypto right now. Try again later</string>
 </resources>
