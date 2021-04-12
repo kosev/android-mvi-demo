@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:maxLines="1"
-                android:text="@{state.cryptoBalance}"
+                android:text="@{state.formattedCryptoBalance}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:maxLines="1"
-                android:text="@{state.fiatBalance}"
+                android:text="@{state.formattedFiatBalance}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +74,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:text="@{state.formattedAmount}"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="4dp"
-                android:text="@{state.rate}"
+                android:text="@{state.formattedExchangeRate}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:drawableStartCompat="@drawable/ic_conversion_24dp"
                 app:drawableTint="@color/black"
@@ -109,7 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
-                    android:text="@{state.result}" />
+                    android:text="@{state.formattedResult}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

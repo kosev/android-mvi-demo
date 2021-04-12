@@ -1,5 +1,6 @@
 package net.kosev.mvidemo.ui.trade
 
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,7 +31,7 @@ class TradeViewModel @Inject constructor(
     fun onEvent(event: TradeEvent): Unit =
         when (event) {
             TradeEvent.ScreenLoad -> handleScreenLoad()
-            TradeEvent.BuyCryptoClick -> TODO()
+            TradeEvent.BuyCryptoClick -> handleBuyCryptoClick()
             TradeEvent.SettingsClick -> handleSettingsClick()
             is TradeEvent.AmountChange -> handleAmountChange(event.value)
         }
@@ -46,9 +47,31 @@ class TradeViewModel @Inject constructor(
                 val cryptoPrice = priceRepository.getCryptoPrice()
                 val rate = amountFormatter.formatExchangeRate(cryptoPrice)
 
-                _state.value = TradeState.Success(cryptoBalance, fiatBalance, cryptoPrice, rate, defaultResult())
+                _state.value = TradeState.Success(
+                    formattedCryptoBalance = cryptoBalance,
+                    formattedFiatBalance = fiatBalance,
+                    cryptoPrice = cryptoPrice,
+                    formattedExchangeRate = rate,
+                    amount = BigDecimal.ZERO,
+                    formattedAmount = "",
+                    formattedResult = defaultResult()
+                )
             } catch (e: Exception) {
                 _state.value = TradeState.Error
+            }
+        }
+    }
+
+    private fun handleBuyCryptoClick() {
+        viewModelScope.launch {
+            try {
+                successOrNull()?.let {
+                    _state.value = TradeState.Loading
+                    balancesRepository.buyCrypto(it.amount, it.cryptoPrice)
+                    onEvent(TradeEvent.ScreenLoad)
+                }
+            } catch (e: Exception) {
+                Log.d("BLA", "error $e")
             }
         }
     }
@@ -58,20 +81,28 @@ class TradeViewModel @Inject constructor(
     }
 
     private fun handleAmountChange(value: String) {
-        (state.value as? TradeState.Success)?.let {
+        successOrNull()?.let {
             try {
-                val result = calculateNewResult(value, it.cryptoPrice)
-                _state.value = it.copy(result = amountFormatter.formatCrypto(result))
+                val amount = BigDecimal(value)
+                val result = calculateNewResult(amount, it.cryptoPrice)
+
+                _state.value = it.copy(
+                    amount = amount,
+                    formattedAmount = amount.toString(),
+                    formattedResult = amountFormatter.formatCrypto(result)
+                )
             } catch (e: NumberFormatException) {
-                _state.value = it.copy(result = defaultResult())
+                _state.value = it.copy(formattedResult = defaultResult())
             }
         }
     }
 
-    private fun calculateNewResult(value: String, cryptoPrice: BigDecimal): BigDecimal =
-        BigDecimal(value).divide(cryptoPrice, 8, RoundingMode.HALF_UP)
+    private fun calculateNewResult(amount: BigDecimal, cryptoPrice: BigDecimal): BigDecimal =
+        amount.divide(cryptoPrice, 8, RoundingMode.HALF_UP)
 
     private fun defaultResult(): String = amountFormatter.formatCrypto(BigDecimal.ZERO)
+
+    private fun successOrNull(): TradeState.Success? = (state.value as? TradeState.Success)
 
     @VisibleForTesting
     fun setStateForTesting(state: TradeState) {
@@ -84,11 +115,13 @@ sealed class TradeState {
     object Loading : TradeState()
     object Error : TradeState()
     data class Success(
-        val cryptoBalance: String,
-        val fiatBalance: String,
+        val formattedCryptoBalance: String,
+        val formattedFiatBalance: String,
         val cryptoPrice: BigDecimal,
-        val rate: String,
-        val result: String
+        val formattedExchangeRate: String,
+        val amount: BigDecimal,
+        val formattedAmount: String,
+        val formattedResult: String
     ) : TradeState()
 }
 

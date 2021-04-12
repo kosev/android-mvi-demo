@@ -37,6 +37,9 @@ class TradeFragment : Fragment() {
         binding.amountField.editText?.addTextChangedListener { text ->
             viewModel.onEvent(TradeEvent.AmountChange(text.toString()))
         }
+        binding.buyButton.setOnClickListener {
+            viewModel.onEvent(TradeEvent.BuyCryptoClick)
+        }
 
         viewModel.state.observe(viewLifecycleOwner) { updateUi(it) }
         viewModel.effect.observe(viewLifecycleOwner, EventObserver { applyEffect(it) })

@@ -106,11 +106,11 @@ class TradeViewModelTest {
 
     private fun generateSuccessState(result: String = "0.00000000"): TradeState.Success =
         TradeState.Success(
-            cryptoBalance = "BTC 1.00000000",
-            fiatBalance = "EUR 10.00",
+            formattedCryptoBalance = "BTC 1.00000000",
+            formattedFiatBalance = "EUR 10.00",
             cryptoPrice = BigDecimal.TEN,
-            rate = "BTC 1 = EUR 10.00",
-            result = result
+            formattedExchangeRate = "BTC 1 = EUR 10.00",
+            formattedResult = result
         )
 
 }
