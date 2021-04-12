@@ -70,13 +70,7 @@ class TradeViewModelTest {
             verifyNoMoreInteractions()
         }
 
-        val expected = TradeState.Success(
-            cryptoBalance = "BTC 1.00000000",
-            fiatBalance = "EUR 10.00",
-            cryptoPrice = BigDecimal.TEN,
-            rate = "BTC 1 = EUR 10.00",
-            result = "0.00000000"
-        )
+        val expected = generateSuccessState()
         assertEquals(expected, tested.state.getOrAwaitValue())
     }
 
@@ -88,5 +82,35 @@ class TradeViewModelTest {
 
         assertEquals(TradeState.Error, tested.state.getOrAwaitValue())
     }
+
+    @Test
+    fun `onEvent with AmountChange and empty value should show the default result`() {
+        whenever(amountFormatter.formatCrypto(eq(BigDecimal.ZERO))).thenReturn("0.00000000")
+        tested.setStateForTesting(generateSuccessState())
+
+        tested.onEvent(TradeEvent.AmountChange(""))
+
+        assertEquals(generateSuccessState(), tested.state.getOrAwaitValue())
+    }
+
+    @Test
+    fun `onEvent with AmountChange and numeric value should calculate the new result`() {
+        whenever(amountFormatter.formatCrypto(eq(BigDecimal("15.00000000"))))
+            .thenReturn("15.00000000")
+        tested.setStateForTesting(generateSuccessState())
+
+        tested.onEvent(TradeEvent.AmountChange("150"))
+
+        assertEquals(generateSuccessState("15.00000000"), tested.state.getOrAwaitValue())
+    }
+
+    private fun generateSuccessState(result: String = "0.00000000"): TradeState.Success =
+        TradeState.Success(
+            cryptoBalance = "BTC 1.00000000",
+            fiatBalance = "EUR 10.00",
+            cryptoPrice = BigDecimal.TEN,
+            rate = "BTC 1 = EUR 10.00",
+            result = result
+        )
 
 }

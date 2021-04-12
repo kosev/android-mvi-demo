@@ -1,5 +1,6 @@
 package net.kosev.mvidemo.ui.trade
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -59,7 +60,7 @@ class TradeViewModel @Inject constructor(
     private fun handleAmountChange(value: String) {
         (state.value as? TradeState.Success)?.let {
             try {
-                val result = calculateNewResult(value, it)
+                val result = calculateNewResult(value, it.cryptoPrice)
                 _state.value = it.copy(result = amountFormatter.formatCrypto(result))
             } catch (e: NumberFormatException) {
                 _state.value = it.copy(result = defaultResult())
@@ -67,10 +68,15 @@ class TradeViewModel @Inject constructor(
         }
     }
 
-    private fun calculateNewResult(value: String, it: TradeState.Success): BigDecimal =
-        BigDecimal(value).divide(it.cryptoPrice, 8, RoundingMode.HALF_UP)
+    private fun calculateNewResult(value: String, cryptoPrice: BigDecimal): BigDecimal =
+        BigDecimal(value).divide(cryptoPrice, 8, RoundingMode.HALF_UP)
 
     private fun defaultResult(): String = amountFormatter.formatCrypto(BigDecimal.ZERO)
+
+    @VisibleForTesting
+    fun setStateForTesting(state: TradeState) {
+        _state.value = state
+    }
 
 }
 
