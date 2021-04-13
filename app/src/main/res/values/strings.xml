@@ -6,4 +6,5 @@
     <string name="receive_bitcoin">Receive Bitcoin</string>
     <string name="error_title">Error</string>
     <string name="error_message">Cannot buy crypto right now. Try again later</string>
+    <string name="no_balance_error">Not enough Euro balance</string>
 </resources>

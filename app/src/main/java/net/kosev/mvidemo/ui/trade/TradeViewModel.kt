@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import net.kosev.mvidemo.R
 import net.kosev.mvidemo.repository.BalancesRepository
 import net.kosev.mvidemo.repository.PriceRepository
 import net.kosev.mvidemo.ui.Event
@@ -50,11 +51,14 @@ class TradeViewModel @Inject constructor(
                 _state.value = TradeState.Success(
                     formattedCryptoBalance = cryptoBalance,
                     formattedFiatBalance = fiatBalance,
+                    fiatBalance = balances.fiatBalance,
                     cryptoPrice = cryptoPrice,
                     formattedExchangeRate = rate,
                     amount = BigDecimal.ZERO,
                     formattedAmount = "",
-                    formattedResult = defaultResult()
+                    formattedResult = defaultResult(),
+                    isBuyingAllowed = false,
+                    noBalanceError = null
                 )
             } catch (e: Exception) {
                 _state.value = TradeState.Error
@@ -85,14 +89,21 @@ class TradeViewModel @Inject constructor(
             try {
                 val amount = BigDecimal(value)
                 val result = calculateNewResult(amount, it.cryptoPrice)
+                val isBalanceShort = it.fiatBalance < amount
 
                 _state.value = it.copy(
                     amount = amount,
                     formattedAmount = amount.toString(),
-                    formattedResult = amountFormatter.formatCrypto(result)
+                    formattedResult = amountFormatter.formatCrypto(result),
+                    isBuyingAllowed = !isBalanceShort,
+                    noBalanceError = if (isBalanceShort) R.string.no_balance_error else null
                 )
             } catch (e: NumberFormatException) {
-                _state.value = it.copy(formattedResult = defaultResult())
+                _state.value = it.copy(
+                    formattedResult = defaultResult(),
+                    isBuyingAllowed = false,
+                    noBalanceError = null
+                )
             }
         }
     }
@@ -119,11 +130,14 @@ sealed class TradeState {
     data class Success(
         val formattedCryptoBalance: String,
         val formattedFiatBalance: String,
+        val fiatBalance: BigDecimal,
         val cryptoPrice: BigDecimal,
         val formattedExchangeRate: String,
         val amount: BigDecimal,
         val formattedAmount: String,
-        val formattedResult: String
+        val formattedResult: String,
+        val isBuyingAllowed: Boolean,
+        val noBalanceError: Int?
     ) : TradeState()
 }
 

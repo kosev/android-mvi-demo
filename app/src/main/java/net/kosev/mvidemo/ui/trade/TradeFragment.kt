@@ -70,6 +70,7 @@ class TradeFragment : Fragment() {
         binding.content.visibility = View.VISIBLE
         binding.loading.visibility = View.GONE
         binding.state = state
+        binding.amountField.error = state.noBalanceError?.let { getString(it) }
     }
 
     private fun showErrorState() {
