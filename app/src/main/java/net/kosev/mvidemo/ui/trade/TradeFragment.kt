@@ -72,6 +72,7 @@ class TradeFragment : Fragment() {
         binding.apply {
             content.visibility = View.GONE
             loading.visibility = View.VISIBLE
+            error.visibility = View.GONE
         }
     }
 
@@ -79,16 +80,24 @@ class TradeFragment : Fragment() {
         binding.apply {
             content.visibility = View.VISIBLE
             loading.visibility = View.GONE
+            error.visibility = View.GONE
             this.state = state
             amountField.error = state.noBalanceError?.let { getString(it) }
-            if (state.amount.compareTo(BigDecimal.ZERO) == 0) {
+            if (amountIsZero(state)) {
                 amountField.editText?.text?.clear()
             }
         }
     }
 
+    private fun amountIsZero(state: TradeState.Success): Boolean =
+        state.amount.compareTo(BigDecimal.ZERO) == 0
+
     private fun showErrorState() {
-        TODO("Not yet implemented")
+        binding.apply {
+            content.visibility = View.GONE
+            loading.visibility = View.GONE
+            error.visibility = View.VISIBLE
+        }
     }
 
     private fun applyEffect(effect: TradeEffect) =

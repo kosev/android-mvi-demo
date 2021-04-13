@@ -201,6 +201,18 @@
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center"
+            android:layout_marginHorizontal="64dp"
+            android:layout_marginTop="200dp"
+            android:gravity="center"
+            android:text="@string/error_loading_balances"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            android:textColor="#f00" />
+
     </FrameLayout>
 
 </layout>
