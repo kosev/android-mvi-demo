@@ -7,6 +7,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import net.kosev.mvidemo.R
 import net.kosev.mvidemo.getOrAwaitValue
 import net.kosev.mvidemo.repository.Balances
 import net.kosev.mvidemo.repository.BalancesRepository
@@ -94,23 +95,78 @@ class TradeViewModelTest {
     }
 
     @Test
-    fun `onEvent with AmountChange and numeric value should calculate the new result`() {
-        whenever(amountFormatter.formatCrypto(eq(BigDecimal("15.00000000"))))
-            .thenReturn("15.00000000")
-        tested.setStateForTesting(generateSuccessState())
+    fun `onEvent with AmountChange and enough balance should calculate the new result`() {
+        whenever(amountFormatter.formatCrypto(eq(BigDecimal("1.50000000"))))
+            .thenReturn("1.50000000")
+        tested.setStateForTesting(generateFundedSuccessState())
 
-        tested.onEvent(TradeEvent.AmountChange("150"))
+        tested.onEvent(TradeEvent.AmountChange("15"))
 
-        assertEquals(generateSuccessState("15.00000000"), tested.state.getOrAwaitValue())
+        val expected = generateFundedSuccessState().copy(
+            amount = BigDecimal(15),
+            formattedAmount = "15",
+            formattedResult = "1.50000000",
+            isBuyingAllowed = true
+        )
+        assertEquals(expected, tested.state.getOrAwaitValue())
     }
 
-    private fun generateSuccessState(result: String = "0.00000000"): TradeState.Success =
+    @Test
+    fun `onEvent with AmountChange and not enough balance should disable buy and show error`() {
+        whenever(amountFormatter.formatCrypto(eq(BigDecimal("1.50000000"))))
+            .thenReturn("1.50000000")
+        tested.setStateForTesting(generateSuccessState())
+
+        tested.onEvent(TradeEvent.AmountChange("15"))
+
+        val expected = generateSuccessState().copy(
+            amount = BigDecimal(15),
+            formattedAmount = "15",
+            formattedResult = "1.50000000",
+            isBuyingAllowed = false,
+            noBalanceError = R.string.no_balance_error
+        )
+        assertEquals(expected, tested.state.getOrAwaitValue())
+    }
+
+    @Test
+    fun `onEvent with BuyCryptoClick should call buy crypto`() = dispatcher.runBlockingTest {
+        whenever(balancesRepo.buyCrypto(eq(BigDecimal.ZERO), eq(BigDecimal.TEN))).thenReturn(Unit)
+        tested.setStateForTesting(generateSuccessState())
+
+        tested.onEvent(TradeEvent.BuyCryptoClick)
+
+        verify(balancesRepo).buyCrypto(eq(BigDecimal.ZERO), eq(BigDecimal.TEN))
+    }
+
+    @Test
+    fun `onEvent with BuyCryptoClick that throws error should show error dialog`() = dispatcher.runBlockingTest {
+        whenever(balancesRepo.buyCrypto(eq(BigDecimal.ZERO), eq(BigDecimal.TEN))).thenThrow(RuntimeException())
+        tested.setStateForTesting(generateSuccessState())
+
+        tested.onEvent(TradeEvent.BuyCryptoClick)
+
+        assertEquals(TradeEffect.ShowBuyError, tested.effect.getOrAwaitValue().getContentIfNotHandled())
+    }
+
+    private fun generateSuccessState(): TradeState.Success =
         TradeState.Success(
             formattedCryptoBalance = "BTC 1.00000000",
             formattedFiatBalance = "EUR 10.00",
+            fiatBalance = BigDecimal.TEN,
             cryptoPrice = BigDecimal.TEN,
             formattedExchangeRate = "BTC 1 = EUR 10.00",
-            formattedResult = result
+            amount = BigDecimal.ZERO,
+            formattedAmount = "",
+            formattedResult = "0.00000000",
+            isBuyingAllowed = false,
+            noBalanceError = null
+        )
+
+    private fun generateFundedSuccessState(): TradeState.Success =
+        generateSuccessState().copy(
+            formattedFiatBalance = "EUR 100.00",
+            fiatBalance = BigDecimal(100)
         )
 
 }

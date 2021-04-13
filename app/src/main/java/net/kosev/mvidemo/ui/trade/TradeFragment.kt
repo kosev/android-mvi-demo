@@ -22,6 +22,11 @@ class TradeFragment : Fragment() {
     private val viewModel: TradeViewModel by viewModels()
     private lateinit var binding: FragmentTradeBinding
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onEvent(TradeEvent.ScreenLoad)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,24 +39,25 @@ class TradeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.settingButton.setOnClickListener {
-            viewModel.onEvent(TradeEvent.SettingsClick)
-        }
-        binding.amountField.editText?.addTextChangedListener { text ->
-            viewModel.onEvent(TradeEvent.AmountChange(text.toString()))
-        }
-        binding.buyButton.setOnClickListener {
-            hideKeyboard()
-            viewModel.onEvent(TradeEvent.BuyCryptoClick)
-        }
+        initViewListeners()
 
         viewModel.state.observe(viewLifecycleOwner) { updateUi(it) }
         viewModel.effect.observe(viewLifecycleOwner, EventObserver { applyEffect(it) })
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onEvent(TradeEvent.ScreenLoad)
+    private fun initViewListeners() {
+        binding.apply {
+            settingButton.setOnClickListener {
+                viewModel.onEvent(TradeEvent.SettingsClick)
+            }
+            amountField.editText?.addTextChangedListener { text ->
+                viewModel.onEvent(TradeEvent.AmountChange(text.toString()))
+            }
+            buyButton.setOnClickListener {
+                hideKeyboard()
+                viewModel.onEvent(TradeEvent.BuyCryptoClick)
+            }
+        }
     }
 
     private fun updateUi(state: TradeState) =
@@ -62,15 +68,19 @@ class TradeFragment : Fragment() {
         }
 
     private fun showLoadingState() {
-        binding.content.visibility = View.GONE
-        binding.loading.visibility = View.VISIBLE
+        binding.apply {
+            content.visibility = View.GONE
+            loading.visibility = View.VISIBLE
+        }
     }
 
     private fun showSuccessState(state: TradeState.Success) {
-        binding.content.visibility = View.VISIBLE
-        binding.loading.visibility = View.GONE
-        binding.state = state
-        binding.amountField.error = state.noBalanceError?.let { getString(it) }
+        binding.apply {
+            content.visibility = View.VISIBLE
+            loading.visibility = View.GONE
+            this.state = state
+            amountField.error = state.noBalanceError?.let { getString(it) }
+        }
     }
 
     private fun showErrorState() {

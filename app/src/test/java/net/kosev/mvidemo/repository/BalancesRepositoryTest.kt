@@ -15,12 +15,22 @@ class BalancesRepositoryTest {
     private val tested = BalancesRepository(dispatcher)
 
     @After
-    fun tearDown() = dispatcher.cleanupTestCoroutines()
+    fun tearDown(): Unit = dispatcher.cleanupTestCoroutines()
 
     @Test
     fun `getBalances should return the hardcoded balances`() = dispatcher.runBlockingTest {
         assertEquals(
             Balances(BigDecimal("1.23450000"), BigDecimal("36456.00")),
+            tested.getBalances()
+        )
+    }
+
+    @Test
+    fun `buyCrypto should update the in-memory balances`() = dispatcher.runBlockingTest {
+        tested.buyCrypto(fiatAmount = BigDecimal(10_000), price = BigDecimal(10_000))
+
+        assertEquals(
+            Balances(BigDecimal("2.23450000"), BigDecimal("26456.00")),
             tested.getBalances()
         )
     }
