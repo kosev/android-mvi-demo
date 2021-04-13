@@ -104,7 +104,6 @@ class TradeViewModelTest {
 
         val expected = generateFundedSuccessState().copy(
             amount = BigDecimal(15),
-            formattedAmount = "15",
             formattedResult = "1.50000000",
             isBuyingAllowed = true
         )
@@ -121,7 +120,6 @@ class TradeViewModelTest {
 
         val expected = generateSuccessState().copy(
             amount = BigDecimal(15),
-            formattedAmount = "15",
             formattedResult = "1.50000000",
             isBuyingAllowed = false,
             noBalanceError = R.string.no_balance_error
@@ -157,7 +155,6 @@ class TradeViewModelTest {
             cryptoPrice = BigDecimal.TEN,
             formattedExchangeRate = "BTC 1 = EUR 10.00",
             amount = BigDecimal.ZERO,
-            formattedAmount = "",
             formattedResult = "0.00000000",
             isBuyingAllowed = false,
             noBalanceError = null

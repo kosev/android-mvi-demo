@@ -55,7 +55,6 @@ class TradeViewModel @Inject constructor(
                     cryptoPrice = cryptoPrice,
                     formattedExchangeRate = rate,
                     amount = BigDecimal.ZERO,
-                    formattedAmount = "",
                     formattedResult = defaultResult(),
                     isBuyingAllowed = false,
                     noBalanceError = null
@@ -93,7 +92,6 @@ class TradeViewModel @Inject constructor(
 
                 _state.value = it.copy(
                     amount = amount,
-                    formattedAmount = amount.toString(),
                     formattedResult = amountFormatter.formatCrypto(result),
                     isBuyingAllowed = !isBalanceShort,
                     noBalanceError = if (isBalanceShort) R.string.no_balance_error else null
@@ -134,7 +132,6 @@ sealed class TradeState {
         val cryptoPrice: BigDecimal,
         val formattedExchangeRate: String,
         val amount: BigDecimal,
-        val formattedAmount: String,
         val formattedResult: String,
         val isBuyingAllowed: Boolean,
         val noBalanceError: Int?

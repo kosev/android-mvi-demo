@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.kosev.mvidemo.*
 import net.kosev.mvidemo.databinding.FragmentTradeBinding
 import net.kosev.mvidemo.ui.EventObserver
+import java.math.BigDecimal
 
 @AndroidEntryPoint
 class TradeFragment : Fragment() {
@@ -80,6 +81,9 @@ class TradeFragment : Fragment() {
             loading.visibility = View.GONE
             this.state = state
             amountField.error = state.noBalanceError?.let { getString(it) }
+            if (state.amount.compareTo(BigDecimal.ZERO) == 0) {
+                amountField.editText?.text?.clear()
+            }
         }
     }
 
