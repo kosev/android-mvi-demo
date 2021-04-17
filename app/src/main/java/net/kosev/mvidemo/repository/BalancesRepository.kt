@@ -20,13 +20,13 @@ class BalancesRepository(private val defaultDispatcher: CoroutineDispatcher) {
 
     suspend fun getBalances(): Balances =
         withContext(defaultDispatcher) {
-            delay(1500)
+            simulateNetworkLatency(1500)
             Balances(currentCryptoBalance, currentFiatBalance)
         }
 
     suspend fun buyCrypto(fiatAmount: BigDecimal, price: BigDecimal): Unit =
         withContext(defaultDispatcher) {
-            delay(100)
+            simulateNetworkLatency(100)
             currentFiatBalance -= fiatAmount
             currentCryptoBalance += fiatAmount.divide(price, 8, RoundingMode.HALF_UP)
         }
@@ -37,3 +37,5 @@ data class Balances(
     val cryptoBalance: BigDecimal,
     val fiatBalance: BigDecimal
 )
+
+suspend fun simulateNetworkLatency(millis: Long): Unit = delay(millis)
