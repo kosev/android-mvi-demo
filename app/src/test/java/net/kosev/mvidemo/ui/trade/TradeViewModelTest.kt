@@ -12,6 +12,7 @@ import net.kosev.mvidemo.getOrAwaitValue
 import net.kosev.mvidemo.repository.Balances
 import net.kosev.mvidemo.repository.BalancesRepository
 import net.kosev.mvidemo.repository.PriceRepository
+import net.kosev.mvidemo.ui.AmountFormatter
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before

@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import net.kosev.mvidemo.R
 import net.kosev.mvidemo.repository.BalancesRepository
 import net.kosev.mvidemo.repository.PriceRepository
+import net.kosev.mvidemo.ui.AmountFormatter
 import net.kosev.mvidemo.ui.Event
 import java.math.BigDecimal
 import java.math.RoundingMode

@@ -1,4 +1,4 @@
-package net.kosev.mvidemo.ui.trade
+package net.kosev.mvidemo.ui
 
 import java.math.BigDecimal
 import java.text.NumberFormat

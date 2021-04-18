@@ -8,4 +8,6 @@
     <string name="error_message">Cannot buy crypto right now. Try again later</string>
     <string name="no_balance_error">Not enough Euro balance</string>
     <string name="error_loading_balances">Cannot load your balance</string>
+    <string name="livedata_demo">LiveData MVI demo</string>
+    <string name="flow_demo">Flow MVI demo</string>
 </resources>

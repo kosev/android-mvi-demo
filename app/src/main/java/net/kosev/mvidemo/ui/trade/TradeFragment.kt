@@ -107,7 +107,7 @@ class TradeFragment : Fragment() {
         }
 
     private fun navigateToSettings(): Unit =
-        findNavController().navigate(R.id.action_calculatorFragment_to_settingsFragment)
+        findNavController().navigate(R.id.action_tradeFragment_to_settingsFragment)
 
     private fun showBuyErrorDialog() {
         AlertDialog.Builder(requireContext())

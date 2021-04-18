@@ -1,19 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
-    app:startDestination="@id/calculatorFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/calculatorFragment"
+        android:id="@+id/tradeFragment"
         android:name="net.kosev.mvidemo.ui.trade.TradeFragment"
-        android:label="CalculatorFragment" >
+        android:label="Fragment">
         <action
-            android:id="@+id/action_calculatorFragment_to_settingsFragment"
+            android:id="@+id/action_tradeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="net.kosev.mvidemo.ui.settings.SettingsFragment"
         android:label="SettingsFragment" />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="net.kosev.mvidemo.ui.home.HomeFragment"
+        android:label="HomeFragment">
+        <action
+            android:id="@+id/action_homeFragment_to_tradeFragment"
+            app:destination="@id/tradeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_exchangeFragment"
+            app:destination="@id/exchangeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/exchangeFragment"
+        android:name="net.kosev.mvidemo.ui.exchange.ExchangeFragment"
+        android:label="ExchangeFragment" />
 
 </navigation>

@@ -2,7 +2,6 @@ package net.kosev.mvidemo.repository
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -37,5 +36,3 @@ data class Balances(
     val cryptoBalance: BigDecimal,
     val fiatBalance: BigDecimal
 )
-
-suspend fun simulateNetworkLatency(millis: Long): Unit = delay(millis)

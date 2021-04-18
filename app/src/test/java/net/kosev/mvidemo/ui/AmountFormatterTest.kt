@@ -1,5 +1,6 @@
-package net.kosev.mvidemo.ui.trade
+package net.kosev.mvidemo.ui
 
+import net.kosev.mvidemo.ui.AmountFormatter
 import org.junit.Assert.*
 import org.junit.Test
 import java.math.BigDecimal
