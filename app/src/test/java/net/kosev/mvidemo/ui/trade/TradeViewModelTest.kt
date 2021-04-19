@@ -48,7 +48,7 @@ class TradeViewModelTest {
 
     @Test
     fun `onEvent with SettingsClick should emit navigate to setting effect`() {
-        tested.onEvent(TradeEvent.SettingsClick)
+        tested.setEvent(TradeEvent.SettingsClick)
         assertEquals(
             TradeEffect.NavigateToSettings,
             tested.effect.getOrAwaitValue().getContentIfNotHandled()
@@ -64,7 +64,7 @@ class TradeViewModelTest {
         whenever(amountFormatter.formatExchangeRate(eq(BigDecimal.TEN))).thenReturn("BTC 1 = EUR 10.00")
         whenever(amountFormatter.formatCrypto(eq(BigDecimal.ZERO))).thenReturn("0.00000000")
 
-        tested.onEvent(TradeEvent.ScreenLoad)
+        tested.setEvent(TradeEvent.ScreenLoad)
 
         inOrder(balancesRepo, priceRepo) {
             verify(balancesRepo).getBalances()
@@ -80,7 +80,7 @@ class TradeViewModelTest {
     fun `onEvent with ScreenLoad and failing balances should emit error state`() = dispatcher.runBlockingTest {
         whenever(balancesRepo.getBalances()).thenThrow(RuntimeException())
 
-        tested.onEvent(TradeEvent.ScreenLoad)
+        tested.setEvent(TradeEvent.ScreenLoad)
 
         assertEquals(TradeState.Error, tested.state.getOrAwaitValue())
     }
@@ -90,7 +90,7 @@ class TradeViewModelTest {
         whenever(amountFormatter.formatCrypto(eq(BigDecimal.ZERO))).thenReturn("0.00000000")
         tested.setStateForTesting(generateSuccessState())
 
-        tested.onEvent(TradeEvent.AmountChange(""))
+        tested.setEvent(TradeEvent.AmountChange(""))
 
         assertEquals(generateSuccessState(), tested.state.getOrAwaitValue())
     }
@@ -101,7 +101,7 @@ class TradeViewModelTest {
             .thenReturn("1.50000000")
         tested.setStateForTesting(generateFundedSuccessState())
 
-        tested.onEvent(TradeEvent.AmountChange("15"))
+        tested.setEvent(TradeEvent.AmountChange("15"))
 
         val expected = generateFundedSuccessState().copy(
             amount = BigDecimal(15),
@@ -117,7 +117,7 @@ class TradeViewModelTest {
             .thenReturn("1.50000000")
         tested.setStateForTesting(generateSuccessState())
 
-        tested.onEvent(TradeEvent.AmountChange("15"))
+        tested.setEvent(TradeEvent.AmountChange("15"))
 
         val expected = generateSuccessState().copy(
             amount = BigDecimal(15),
@@ -133,7 +133,7 @@ class TradeViewModelTest {
         whenever(balancesRepo.buyCrypto(eq(BigDecimal.ZERO), eq(BigDecimal.TEN))).thenReturn(Unit)
         tested.setStateForTesting(generateSuccessState())
 
-        tested.onEvent(TradeEvent.BuyCryptoClick)
+        tested.setEvent(TradeEvent.BuyCryptoClick)
 
         verify(balancesRepo).buyCrypto(eq(BigDecimal.ZERO), eq(BigDecimal.TEN))
     }
@@ -143,7 +143,7 @@ class TradeViewModelTest {
         whenever(balancesRepo.buyCrypto(eq(BigDecimal.ZERO), eq(BigDecimal.TEN))).thenThrow(RuntimeException())
         tested.setStateForTesting(generateSuccessState())
 
-        tested.onEvent(TradeEvent.BuyCryptoClick)
+        tested.setEvent(TradeEvent.BuyCryptoClick)
 
         assertEquals(TradeEffect.ShowBuyError, tested.effect.getOrAwaitValue().getContentIfNotHandled())
     }

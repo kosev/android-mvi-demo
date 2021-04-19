@@ -32,6 +32,10 @@
     <fragment
         android:id="@+id/exchangeFragment"
         android:name="net.kosev.mvidemo.ui.exchange.ExchangeFragment"
-        android:label="ExchangeFragment" />
+        android:label="ExchangeFragment" >
+        <action
+            android:id="@+id/action_exchangeFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 
 </navigation>

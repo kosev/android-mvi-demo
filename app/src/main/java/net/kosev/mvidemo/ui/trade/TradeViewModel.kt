@@ -29,7 +29,7 @@ class TradeViewModel @Inject constructor(
     private val _effect = MutableLiveData<Event<TradeEffect>>()
     val effect: LiveData<Event<TradeEffect>> = _effect
 
-    fun onEvent(event: TradeEvent): Unit =
+    fun setEvent(event: TradeEvent): Unit =
         when (event) {
             TradeEvent.ScreenLoad -> handleScreenLoad()
             TradeEvent.BuyCryptoClick -> handleBuyCryptoClick()
@@ -37,10 +37,18 @@ class TradeViewModel @Inject constructor(
             is TradeEvent.AmountChange -> handleAmountChange(event.value)
         }
 
+    private fun setState(state: TradeState) {
+        _state.value = state
+    }
+
+    private fun setEffect(effect: TradeEffect) {
+        _effect.value = Event(effect)
+    }
+
     private fun handleScreenLoad() {
         viewModelScope.launch {
             try {
-                _state.value = TradeState.Loading
+                setState(TradeState.Loading)
 
                 val balances = balancesRepository.getBalances()
                 val cryptoBalance = amountFormatter.formatCryptoWithSymbol(balances.cryptoBalance)
@@ -49,7 +57,7 @@ class TradeViewModel @Inject constructor(
                 val cryptoPrice = priceRepository.getCryptoPrice()
                 val rate = amountFormatter.formatExchangeRate(cryptoPrice)
 
-                _state.value = TradeState.Success(
+                setState(TradeState.Success(
                     formattedCryptoBalance = cryptoBalance,
                     formattedFiatBalance = fiatBalance,
                     fiatBalance = balances.fiatBalance,
@@ -59,9 +67,9 @@ class TradeViewModel @Inject constructor(
                     formattedResult = defaultResult(),
                     isBuyingAllowed = false,
                     noBalanceError = null
-                )
+                ))
             } catch (e: Exception) {
-                _state.value = TradeState.Error
+                setState(TradeState.Error)
             }
         }
     }
@@ -70,18 +78,18 @@ class TradeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 successOrNull()?.let {
-                    _state.value = TradeState.Loading
+                    setState(TradeState.Loading)
                     balancesRepository.buyCrypto(it.amount, it.cryptoPrice)
-                    onEvent(TradeEvent.ScreenLoad)
+                    setEvent(TradeEvent.ScreenLoad)
                 }
             } catch (e: Exception) {
-                _effect.value = Event(TradeEffect.ShowBuyError)
+                setEffect(TradeEffect.ShowBuyError)
             }
         }
     }
 
     private fun handleSettingsClick() {
-        _effect.value = Event(TradeEffect.NavigateToSettings)
+        setEffect(TradeEffect.NavigateToSettings)
     }
 
     private fun handleAmountChange(value: String) {
@@ -91,18 +99,18 @@ class TradeViewModel @Inject constructor(
                 val result = calculateNewResult(amount, it.cryptoPrice)
                 val isBalanceShort = it.fiatBalance < amount
 
-                _state.value = it.copy(
+                setState(it.copy(
                     amount = amount,
                     formattedResult = amountFormatter.formatCrypto(result),
                     isBuyingAllowed = !isBalanceShort,
                     noBalanceError = if (isBalanceShort) R.string.no_balance_error else null
-                )
+                ))
             } catch (e: NumberFormatException) {
-                _state.value = it.copy(
+                setState(it.copy(
                     formattedResult = defaultResult(),
                     isBuyingAllowed = false,
                     noBalanceError = null
-                )
+                ))
             }
         }
     }
@@ -117,9 +125,8 @@ class TradeViewModel @Inject constructor(
         (state.value as? TradeState.Success)
 
     @VisibleForTesting
-    fun setStateForTesting(state: TradeState) {
-        _state.value = state
-    }
+    fun setStateForTesting(state: TradeState): Unit =
+        setState(state)
 
 }
 

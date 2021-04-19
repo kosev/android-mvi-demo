@@ -25,7 +25,7 @@ class TradeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.onEvent(TradeEvent.ScreenLoad)
+        viewModel.setEvent(TradeEvent.ScreenLoad)
     }
 
     override fun onCreateView(
@@ -49,14 +49,14 @@ class TradeFragment : Fragment() {
     private fun initViewListeners() {
         binding.apply {
             settingButton.setOnClickListener {
-                viewModel.onEvent(TradeEvent.SettingsClick)
+                viewModel.setEvent(TradeEvent.SettingsClick)
             }
             amountField.editText?.addTextChangedListener { text ->
-                viewModel.onEvent(TradeEvent.AmountChange(text.toString()))
+                viewModel.setEvent(TradeEvent.AmountChange(text.toString()))
             }
             buyButton.setOnClickListener {
                 hideKeyboard()
-                viewModel.onEvent(TradeEvent.BuyCryptoClick)
+                viewModel.setEvent(TradeEvent.BuyCryptoClick)
             }
         }
     }
@@ -114,7 +114,7 @@ class TradeFragment : Fragment() {
             .setTitle(R.string.error_title)
             .setMessage(R.string.error_message)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                viewModel.onEvent(TradeEvent.ScreenLoad)
+                viewModel.setEvent(TradeEvent.ScreenLoad)
             }
             .show()
     }
