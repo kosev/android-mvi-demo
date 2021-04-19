@@ -9,7 +9,7 @@ import org.junit.Test
 class HomeViewModelTest {
 
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private val tested = HomeViewModel()
 

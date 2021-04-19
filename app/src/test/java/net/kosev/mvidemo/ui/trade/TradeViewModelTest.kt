@@ -25,7 +25,7 @@ import java.math.BigDecimal
 class TradeViewModelTest {
 
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private val dispatcher = TestCoroutineDispatcher()
 
